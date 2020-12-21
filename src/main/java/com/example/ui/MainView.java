@@ -2,6 +2,7 @@ package com.example.ui;
 
 import com.example.backend.entity.Company;
 import com.example.backend.entity.Contact;
+import com.example.backend.service.CompanyService;
 import com.example.backend.service.ContactService;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
@@ -12,6 +13,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.SQLException;
+
 @Route("")
 @CssImport("./styles/shared-styles.css")
 public class MainView extends VerticalLayout {
@@ -20,14 +23,18 @@ public class MainView extends VerticalLayout {
   private TextField filterText = new TextField();
   private ContactForm contactForm;
 
-  public MainView(ContactService contactService) {
+  public MainView(ContactService contactService, CompanyService companyService) {
     this.contactService = contactService;
     addClassName("list-view");
     setSizeFull();
     configureFilter();
     configureGrid();
 
-    contactForm = new ContactForm();
+    try {
+      contactForm = new ContactForm(companyService.findAll());
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
 
     Div content = new Div(grid, contactForm);
     content.addClassName("content");
