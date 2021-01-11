@@ -1,4 +1,4 @@
-package com.example.ui;
+package com.example.ui.view.list;
 
 import com.example.backend.entity.Company;
 import com.example.backend.entity.Contact;
@@ -15,8 +15,10 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
-import javax.validation.ValidationException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -32,11 +34,11 @@ public class ContactForm extends FormLayout {
   Button delete = new Button("Delete");
   Button close = new Button("Close");
 
-//  Binder<Contact> binder = new BeanValidationBinder<>(Contact.class);
+  Binder<Contact> binder = new BeanValidationBinder<>(Contact.class);
 
   public ContactForm(List<Company> companies) throws SQLException {
     addClassName("contact-form");
-//    binder.bindInstanceFields((PreparedStatement) this);
+    binder.bindInstanceFields(this);
 
     status.setItems(Contact.Status.values());
     company.setItems(companies);
@@ -69,7 +71,7 @@ public class ContactForm extends FormLayout {
 
   private void validateAndSave() {
     try {
-//      binder.writeBean(contact);
+      binder.writeBean(contact);
       fireEvent(new SaveEvent(this, contact));
     } catch (ValidationException e) {
       e.printStackTrace();
@@ -78,7 +80,7 @@ public class ContactForm extends FormLayout {
 
   public void setContact(Contact contact){
     this.contact = contact;
-//    binder.readBean(contact);
+    binder.readBean(contact);
   }
 
   public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener) {

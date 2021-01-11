@@ -1,7 +1,7 @@
 package com.example.ui.events;
 
 import com.example.backend.entity.Contact;
-import com.example.ui.ContactForm;
+import com.example.ui.view.list.ContactForm;
 
 public class DeleteEvent extends ContactFormEvent {
 
